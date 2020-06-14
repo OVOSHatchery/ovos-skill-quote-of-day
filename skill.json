@@ -1,0 +1,26 @@
+{
+  "name": "Quote of the Day Skill",
+  "skillname": "skill-quote-of-day",
+  "authorname": "JarbasSkills",
+  "foldername": "",
+  "url": "https://github.com/JarbasSkills/skill-quote-of-day",
+  "branch": "master",
+  "desktopFile": false,
+  "warning": "",
+  "systemDeps": false,
+  "platforms": [
+    "arm",
+    "arm64",
+    "i386",
+    "x86_64",
+    "ia64"
+  ],
+  "examples": [
+    "quote of the day",
+    "funny quote of the day",
+    "inspirational quote for today",
+    "who said that",
+    "where do you get your quotes",
+    "can your quotes be trusted"
+  ]
+}
