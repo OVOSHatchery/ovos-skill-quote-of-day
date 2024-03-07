@@ -54,16 +54,20 @@ class QuoteOfDaySkill(OVOSSkill):
     @resting_screen_handler("QuoteOfDay")
     def idle(self, message):
         self.update_quote(self.settings["default_category"])
-        self.gui.clear()
         self.gui.show_page('idle.qml')
 
     def get_quote_of_the_day(self, category="random"):
+        key = self.settings.get("key", "o3FQPFaAp4wCnvLlmXzk3UEyi4yAnHWSlUWhn9x0")
+        headers = {
+            'accept': 'application/json',
+            'Authorization': f'Bearer {key}'
+        }
         url = 'https://quotes.rest/qod'
         if category == "random":
-            response = requests.get(url).json()
+            response = requests.get(url, headers=headers).json()
         else:
             assert category in self.categories
-            response = requests.get(url,
+            response = requests.get(url, headers=headers,
                                     params={"category": category}).json()
         self.log.debug("Quotes Api Response: " + str(response))
         return response['contents']['quotes'][0]
