@@ -1,23 +1,18 @@
-from mycroft import MycroftSkill, intent_file_handler, intent_handler
-import requests
-from mycroft.skills.core import resting_screen_handler
-from mtranslate import translate
 from os.path import join, dirname
 from datetime import datetime, timedelta
-from adapt.intent import IntentBuilder
+import requests
+from ovos_workshop.decorators import resting_screen_handler, intent_handler
+from ovos_workshop.intents import IntentBuilder
+from ovos_workshop.skills.ovos import OVOSSkill
 
 
-class QuoteOfDaySkill(MycroftSkill):
+class QuoteOfDaySkill(OVOSSkill):
     categories = ['inspire', 'management', 'sports', 'life', 'funny',
                   'love', 'art', 'students']
 
     def initialize(self):
         if "default_category" not in self.settings:
             self.settings["default_category"] = "random"
-
-    def get_intro_message(self):
-        # welcome dialog on skill install
-        self.speak_dialog("intro", {"skill_name": "quote of the day"})
 
     def update_quote(self, category="random"):
         if category not in self.settings:
@@ -46,7 +41,7 @@ class QuoteOfDaySkill(MycroftSkill):
                 qod = data["'quote'"]
                 if self.lang.split("-")[0].lower() != \
                         data["lang"].split("-")[0].lower():
-                    qod = translate(qod, self.lang)
+                    qod = self.translator.translate(qod, self.lang)
                     self.settings[category]['quote'] = qod
 
                 self.settings[category]["ts"] = today.timestamp()
@@ -131,11 +126,11 @@ class QuoteOfDaySkill(MycroftSkill):
         author = message.data["WHO"]
         self.speak(author, wait=True)
 
-    @intent_file_handler("trustworthy.intent")
+    @intent_handler("trustworthy.intent")
     def handle_trustworthy(self, message):
         self.speak_dialog("no_idea")
 
-    @intent_file_handler("source.intent")
+    @intent_handler("source.intent")
     def handle_source(self, message):
         self.gui.show_image(join(dirname(__file__), "logo.png"),
                             caption="Take all info with a grain of salt",
@@ -143,6 +138,3 @@ class QuoteOfDaySkill(MycroftSkill):
         self.speak_dialog("theysaidso", wait=True)
         self.gui.clear()
 
-
-def create_skill():
-    return QuoteOfDaySkill()
